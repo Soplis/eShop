@@ -1,3 +1,3 @@
-"# IM" 
-Python3.7
-flask
+# Интернет магазин с оплатой
+Python 3.7
+Framework Flask
