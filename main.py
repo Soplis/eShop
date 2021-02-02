@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 
 from cloudipsp import Api, Checkout
+from sqlalchemy.sql.elements import Null
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shop.db'
@@ -17,6 +18,7 @@ class Item(db.Model):
 
 	def __repr__(self):
 		return self.title
+
 @app.route('/')
 def index():
 	items = Item.query.order_by(Item.price).all()
@@ -57,7 +59,18 @@ def create():
 	else:
 		return render_template('create.html')
 
+@app.route('/edit', methods=['GET'])
+def edit():
+	items = Item.query.all()
+	return render_template('edit.html', data=items)
 
+@app.route('/delete/<int:id>', methods=['GET'])
+def delete(id):
+	item = Item.query.filter(Item.id == id).one()
+	if item.id > 0:
+		db.session.delete(item)
+		db.session.commit()
+	return redirect('/edit')
 
 if __name__ == "__main__":
 	app.run(debug=True)
