@@ -66,8 +66,9 @@ def edit():
 
 @app.route('/delete/<int:id>', methods=['GET'])
 def delete(id):
-	item = Item.query.filter(Item.id == id).one()
-	if item.id > 0:
+	count = Item.query.filter(Item.id == id).count()
+	if count > 0:
+		item = Item.query.filter(Item.id == id)
 		db.session.delete(item)
 		db.session.commit()
 	return redirect('/edit')
