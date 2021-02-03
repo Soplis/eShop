@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 
 from cloudipsp import Api, Checkout
-from sqlalchemy.sql.elements import Null
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shop.db'
@@ -66,9 +65,8 @@ def edit():
 
 @app.route('/delete/<int:id>', methods=['GET'])
 def delete(id):
-	count = Item.query.filter(Item.id == id).count()
-	if count > 0:
-		item = Item.query.filter(Item.id == id)
+	item = Item.query.get(id)
+	if item != None:
 		db.session.delete(item)
 		db.session.commit()
 	return redirect('/edit')
